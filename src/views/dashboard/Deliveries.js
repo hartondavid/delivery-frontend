@@ -21,6 +21,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 const columns = [
     { field: 'id', headerName: 'Nr.', type: 'string' },
@@ -297,6 +298,9 @@ const Deliveries = ({ user, userRights }) => {
 
     const handleSelectCourier = (courier) => {
         setSelectedCourier(courier);
+        setCourierSearchResults([]);
+        setCourierSearchTerm('');
+
     };
 
     const handleAssignOrdersToDelivery = () => {
@@ -357,7 +361,7 @@ const Deliveries = ({ user, userRights }) => {
 
                                 }, showErrorToast);
                             }
-                        }, showErrorToast, userId)
+                        }, showErrorToast)
                 }}
 
                 columns={columns}
@@ -430,7 +434,9 @@ const Deliveries = ({ user, userRights }) => {
                 <DialogActions>
                     <Button variant="contained"
                         onClick={handleAssignOrdersToDelivery}
-                        color="success"
+                        sx={{
+                            backgroundColor: ' #009688', color: 'white'
+                        }}
                     >
                         Finalizeaza
                     </Button>
@@ -478,13 +484,15 @@ const Deliveries = ({ user, userRights }) => {
                                 <Typography variant="body1">{selectedCourier.email}</Typography>
                                 <LocalPhoneIcon sx={{ mr: 1, ml: 1 }} />
                                 <Typography variant="body1">{selectedCourier.phone}</Typography>
+                                <HowToRegIcon sx={{ mr: 1, ml: 1, color: 'green' }} />
+
                             </Box>
 
                         </Box>
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeAssignCourierDialog} variant="contained" sx={{ backgroundColor: 'rgb(9, 159, 32)', color: 'white' }}>Asigneaza</Button>
+                    <Button onClick={closeAssignCourierDialog} variant="contained" sx={{ backgroundColor: ' #009688', color: 'white' }}>Asigneaza</Button>
 
                 </DialogActions>
             </Dialog>

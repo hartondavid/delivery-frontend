@@ -1,6 +1,6 @@
 import { getToken } from '../utils/utilFunctions';
 
-export const apiAddRoute = async (successCallback, errorCallback, adminId, area) => {
+export const apiAddRoute = async (successCallback, errorCallback, area) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -10,7 +10,7 @@ export const apiAddRoute = async (successCallback, errorCallback, adminId, area)
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ admin_id: adminId, area: area })
+            body: JSON.stringify({ area: area })
         });
         const data = await response.json();
         if (!data.success) {

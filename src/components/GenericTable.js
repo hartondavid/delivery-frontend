@@ -55,7 +55,10 @@ const GenericTable = ({ title, subtitle, buttonText, buttonAction, columns, data
 
 
                     {buttonText && buttonAction && (
-                        <Button variant="contained" color="success" onClick={buttonAction} sx={{ mt: -4 }}>
+                        <Button variant="contained" onClick={buttonAction} sx={{
+                            mt: -4,
+                            backgroundColor: ' #009688', color: 'white'
+                        }}>
                             {buttonText}
                         </Button>
                     )}

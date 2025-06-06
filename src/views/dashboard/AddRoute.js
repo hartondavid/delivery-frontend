@@ -26,7 +26,7 @@ const AddRoute = ({ user }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        apiAddRoute((response) => { navigate(-1); showSuccessToast(response.message) }, showErrorToast, userId, formData.area)
+        apiAddRoute((response) => { navigate(-1); showSuccessToast(response.message) }, showErrorToast, formData.area)
 
     };
 
@@ -55,7 +55,7 @@ const AddRoute = ({ user }) => {
                         </TextField>
 
                         <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
-                            <Button type="submit" variant="contained" sx={{ mr: 1, mb: 1, backgroundColor: 'rgb(9, 159, 32)', color: 'white' }}>
+                            <Button type="submit" variant="contained" sx={{ mr: 1, mb: 1, backgroundColor: ' #009688', color: 'white' }}>
                                 Adauga ruta
                             </Button>
                             <Button variant="contained" color="error" sx={{ mb: 1 }} onClick={() => navigate(-1)}>

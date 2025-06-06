@@ -48,6 +48,7 @@ const Orders = ({ userRights }) => {
 
     return (
         <>
+
             <GenericTable
                 title={"Comenzi"}
                 columns={columns}

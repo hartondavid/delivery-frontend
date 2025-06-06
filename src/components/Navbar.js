@@ -34,7 +34,7 @@ const Navbar = ({ onMenuClick, user, navigationButtons }) => {
 
 
     return (
-        <AppBar position="fixed" sx={{ backgroundColor: 'rgb(9, 159, 32)', zIndex: theme.zIndex.drawer + 1, color: 'white' }}>
+        <AppBar position="fixed" sx={{ backgroundColor: ' #009688', zIndex: theme.zIndex.drawer + 1, color: 'white' }}>
             <Toolbar className="flex items-center justify-between">
 
                 <IconButton

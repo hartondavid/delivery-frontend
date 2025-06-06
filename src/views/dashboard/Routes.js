@@ -300,7 +300,9 @@ const Routes = ({ user, userRights }) => {
                 <DialogActions>
                     <Button variant="contained"
                         onClick={handleAssignCourierToRoute}
-                        color="success"
+                        sx={{
+                            backgroundColor: ' #009688', color: 'white'
+                        }}
                     >
                         Finalizeaza
                     </Button>

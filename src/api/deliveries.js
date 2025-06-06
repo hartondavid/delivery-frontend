@@ -49,7 +49,7 @@ export const apiGetDeliveriesByCourierId = async (successCallback, errorCallback
     }
 };
 
-export const apiAddDelivery = async (successCallback, errorCallback, adminId) => {
+export const apiAddDelivery = async (successCallback, errorCallback) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -59,7 +59,7 @@ export const apiAddDelivery = async (successCallback, errorCallback, adminId) =>
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ admin_id: adminId })
+
         });
 
         const data = await response.json();

@@ -118,7 +118,7 @@ const AddEditOrder = ({ userRights }) => {
                         </FormControl>
 
                         <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
-                            <Button type="submit" variant="contained" sx={{ mr: 1, mb: 1, backgroundColor: 'rgb(9, 159, 32)', color: 'white' }}>
+                            <Button type="submit" variant="contained" sx={{ mr: 1, mb: 1, backgroundColor: ' #009688', color: 'white' }}>
                                 {orderId === "0" ? 'Adauga comanda' : 'Actualizeaza comanda'}
                             </Button>
                             <Button variant="contained" color="error" sx={{ mb: 1 }} onClick={() => navigate(-1)}>
