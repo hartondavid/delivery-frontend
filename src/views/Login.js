@@ -139,7 +139,7 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         error={!!errors.email}
                         helperText={errors.email}
-                        sx={{ ...addStyleToTextField(email), mt: 2, mb: 2 }}
+                        sx={{ ...addStyleToTextField(email), mt: 2 }}
                     />
                     <TextField
                         fullWidth
