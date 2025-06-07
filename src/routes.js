@@ -1,5 +1,5 @@
 import Login from "./views/Login.js";
-import Dashboard from "./views/dashboard/index.js";
+import Dashboard from "./views/dashboard/indexx.js";
 import AddEditOrder from "./views/dashboard/AddEditOrder.js";
 import Orders from "./views/dashboard/Orders.js";
 import Deliveries from "./views/dashboard/Deliveries.js";
