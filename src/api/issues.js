@@ -48,7 +48,7 @@ export const apiUpdateIssue = async (successCallback, errorCallback, issueId, de
     }
 };
 
-export const apiDeleteIssue = async (issueId, successCallback, errorCallback) => {
+export const apiDeleteIssue = async (successCallback, errorCallback, issueId) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {

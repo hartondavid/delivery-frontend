@@ -3,8 +3,6 @@ import {
     Typography,
     TextField,
     Button,
-    FormControlLabel,
-    Checkbox,
     Box,
 } from '@mui/material';
 import { useState } from 'react';
@@ -16,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { showSuccessToast } from '../utils/utilFunctions';
 import './login.css';
 import bgImage from "../../src/assets/login-bg.jpg";
+import { addStyleToTextField } from '../utils/utilFunctions';
 
 const Login = () => {
     const navigate = useNavigate(); // Initialize navigate function
@@ -140,6 +139,7 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         error={!!errors.email}
                         helperText={errors.email}
+                        sx={{ ...addStyleToTextField(email), mt: 2, mb: 2 }}
                     />
                     <TextField
                         fullWidth
@@ -151,9 +151,11 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         error={!!errors.password}
                         helperText={errors.password}
+                        sx={{ ...addStyleToTextField(password), mt: 2, mb: 2 }}
                     />
 
-                    <Button variant="contained" sx={{ backgroundColor: ' #009688', color: 'white' }} fullWidth onClick={login}>
+                    <Button variant="contained" sx={{ backgroundColor: ' #009688', color: 'white' }}
+                        fullWidth onClick={login}>
                         {'login'}
                     </Button>
                 </Box>

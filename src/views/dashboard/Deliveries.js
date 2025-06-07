@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     apiGetDeliveriesByAdminId, apiAddOrdersToDelivery,
-    apiAssignCourierToDelivery, apiAddDelivery, apiGetDeliveriesByCourierId
+    apiAssignCourierToDelivery, apiAddDelivery, apiGetDeliveriesByCourierId, apiDeleteDelivery
 } from "../../api/deliveries"
 import GenericTable from "../../components/GenericTable";
 import { showErrorToast, showSuccessToast } from "../../utils/utilFunctions";
@@ -22,13 +22,16 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import dayjs from "dayjs";
+import { Chip } from "@mui/material";
+import { addStyleToTextField } from "../../utils/utilFunctions";
+const colorMap = {
+    pending: 'orange',
+    delivered: 'green',
+    cancelled: 'red',
+    issue: 'red'
+};
 
-const columns = [
-    { field: 'id', headerName: 'Nr.', type: 'string' },
-    { field: 'courier_name', headerName: 'Nume curier', type: 'string' },
-    { field: 'created_at', headerName: 'Data', type: 'date' },
-
-];
 
 const Deliveries = ({ user, userRights }) => {
     const navigate = useNavigate();
@@ -49,12 +52,43 @@ const Deliveries = ({ user, userRights }) => {
     const [selectedCourier, setSelectedCourier] = useState(null);
     const [courierLoading, setCourierLoading] = useState(false);
     const [courierDebounceTimeout, setCourierDebounceTimeout] = useState(null);
-    console.log("user", user);
+ 
     const userId = user?.data?.id
 
     const rightCode = userRights[0]?.right_code;
 
+    const [openDialog, setOpenDialog] = useState(false);
+    const [deliveryToDelete, setDeliveryToDelete] = useState(null);
 
+    const [columns, setColumns] = useState([]);
+
+    useEffect(() => {
+        setColumns([
+            { field: 'id', headerName: 'Nr.', type: 'string' },
+            {
+                field: 'courier_name', headerName: 'Nume curier', type: 'string',
+
+                renderCell: (params) => (
+
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {params.row.courier_name}
+                        <HowToRegIcon sx={{ mr: 1, ml: 1, color: 'green' }} />
+
+                    </Box>
+
+                )
+            },
+
+            {
+                field: 'created_at', headerName: 'Data', type: 'date', renderCell: ({ value }) => {
+                    return dayjs(value).format('DD.MM.YYYY');
+                }
+            },
+
+        ]);
+
+
+    }, [selectedCourier])
 
     useEffect(() => {
         if (rightCode === RIGHTS_MAPPING.ADMIN) {
@@ -62,9 +96,19 @@ const Deliveries = ({ user, userRights }) => {
             apiGetDeliveriesByAdminId((response) => {
 
                 setData(response.data)
-                console.log('response.data', response.data)
 
             }, showErrorToast);
+
+
+            let actionsTmp = [];
+
+            actionsTmp = [
+                { icon: (<TocIcon />), color: 'black', onClick: (id) => handleFetchOrders(id) },
+                { icon: (<AccountCircleIcon />), color: 'black', onClick: (id) => openAssignCourierToOrdersDialog(id) },
+                { icon: <DeleteIcon />, color: 'red', onClick: handleOpenDialog },
+            ];
+
+            setActions(actionsTmp);
         } else if (rightCode === RIGHTS_MAPPING.COURIER) {
             apiGetDeliveriesByCourierId((response) => {
                 setData(response.data)
@@ -74,17 +118,6 @@ const Deliveries = ({ user, userRights }) => {
 
     }, [data.length, rightCode]);
 
-
-    useEffect(() => {
-        let actionsTmp = [];
-
-        actionsTmp = [
-            { icon: (<TocIcon />), color: 'black', onClick: (id) => handleFetchOrders(id) },
-            { icon: (<AccountCircleIcon />), color: 'black', onClick: (id) => openAssignCourierToOrdersDialog(id) },
-        ];
-
-        setActions(actionsTmp);
-    }, []);
 
     const [selectedOrders, setSelectedOrders] = useState([]);
 
@@ -204,6 +237,7 @@ const Deliveries = ({ user, userRights }) => {
                     address: order.address,
                     status: order.status,
 
+
                 }))
             );
 
@@ -241,7 +275,50 @@ const Deliveries = ({ user, userRights }) => {
                 </Box>
             )
         },
-        { field: 'status', headerName: 'Status' }
+        {
+            field: 'status',
+            headerName: 'Status',
+            renderCell: ({ value }) => {
+                const statusMap = {
+                    pending: 'In asteptare',
+                    delivered: 'Livrata',
+                    cancelled: 'Anulata',
+                    issue: 'Problema'
+                };
+
+
+
+                const statusLabel = statusMap[value] || value;
+                const color = colorMap[value] || 'default';
+
+                return (
+                    <Chip
+                        label={statusLabel}
+                        variant="outlined"
+                        sx={{
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            color: color,
+                            borderColor: color,
+                            "& .MuiChip-deleteIcon": {
+                                color: "transparent",
+                                transition: "color 0.2s ease-in-out",
+                            },
+                            "& .MuiChip-deleteIcon:hover": {
+                                color: color,
+                            },
+
+                        }}
+                        onClick={() => {
+
+                        }}
+                    />
+                );
+            }
+        },
+
+
+
     ];
 
 
@@ -342,7 +419,26 @@ const Deliveries = ({ user, userRights }) => {
 
     };
 
-    console.log("selectedOrders", selectedOrders);
+    // Function to open the delete confirmation dialog
+    const handleOpenDialog = (deliveryId) => {
+        setDeliveryToDelete(deliveryId); // Store the seminar ID to be deleted
+        setOpenDialog(true); // Open the dialog
+    };
+
+
+    const handleDeleteDeliveryRequest = () => {
+        apiDeleteDelivery((response) => {
+            showSuccessToast(response.message);
+            const updatedData = data.filter((delivery) => delivery.id !== deliveryToDelete);
+            setData(updatedData);
+            setOpenDialog(false);
+
+        }, showErrorToast, deliveryToDelete);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
     return (
         <>
@@ -359,9 +455,12 @@ const Deliveries = ({ user, userRights }) => {
 
                                     setData(response.data)
 
+
                                 }, showErrorToast);
                             }
                         }, showErrorToast)
+
+
                 }}
 
                 columns={columns}
@@ -369,6 +468,7 @@ const Deliveries = ({ user, userRights }) => {
                 childrenColumns={childrenColumns}
                 childrenData={childrenData}
                 isExtendedTable={true}
+
             />
 
             {/* Add Employee Dialog */}
@@ -381,7 +481,7 @@ const Deliveries = ({ user, userRights }) => {
                         fullWidth
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        sx={{ mt: 2 }}
+                        sx={{ ...addStyleToTextField(searchTerm), mt: 1 }}
 
                     />
 
@@ -452,7 +552,7 @@ const Deliveries = ({ user, userRights }) => {
                         fullWidth
                         value={courierSearchTerm}
                         onChange={handleCourierSearchChange}
-                        sx={{ mt: 2 }}
+                        sx={{ ...addStyleToTextField(courierSearchTerm), mt: 1 }}
                     />
                     {courierLoading ? <CircularProgress /> : (
                         <List>
@@ -494,6 +594,21 @@ const Deliveries = ({ user, userRights }) => {
                 <DialogActions>
                     <Button onClick={closeAssignCourierDialog} variant="contained" sx={{ backgroundColor: ' #009688', color: 'white' }}>Asigneaza</Button>
 
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle></DialogTitle>
+                <DialogContent>
+                    Esti sigur ca vrei sa stergi livrarea?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} sx={{ backgroundColor: '#009688', color: 'white' }}>
+                        Anuleaza
+                    </Button>
+                    <Button onClick={handleDeleteDeliveryRequest} sx={{ backgroundColor: 'red', color: 'white' }}>
+                        Sterge
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

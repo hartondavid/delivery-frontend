@@ -151,7 +151,9 @@ const GenericTable = ({ title, subtitle, buttonText, buttonAction, columns, data
                                                             {childrenData[row.id] && childrenData[row.id].map((childRow) => (
                                                                 <TableRow key={`generic-table-child-row-${childRow.id}`}>{childrenColumns && childrenColumns.map((column) => (
                                                                     <TableCell key={`generic-table-child-column-${childRow.id}-${column.field}`}>
-                                                                        <TableCell key={`generic-table-child-column-${childRow.id}-${column.field}`}>{childRow[column.field]}</TableCell>
+                                                                        {column.renderCell
+                                                                            ? column.renderCell({ value: childRow[column.field], row: childRow })
+                                                                            : childRow[column.field]}
                                                                     </TableCell>
                                                                 ))}</TableRow>
                                                             ))}

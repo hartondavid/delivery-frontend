@@ -4,6 +4,7 @@ import { apiAddOrder, apiGetOrderById, apiUpdateOrder } from "../../api/orders";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/utilFunctions";
 import { RIGHTS_MAPPING } from "../../utils/utilConstants";
+import { addStyleToTextField } from "../../utils/utilFunctions";
 
 const AddEditOrder = ({ userRights }) => {
     const navigate = useNavigate(); // Initialize navigate function
@@ -25,12 +26,11 @@ const AddEditOrder = ({ userRights }) => {
                 parseOrderResponse(response.data);
             }, showErrorToast, orderId)
 
-            console.log('parseProductResponse', formData);
         }
     }, [orderId])
 
     const parseOrderResponse = (data) => {
-        console.log('DATA FROM API', data);
+
         setFormData({
             recipient: data.recipient,
             phone: data.phone,
@@ -77,6 +77,7 @@ const AddEditOrder = ({ userRights }) => {
                             margin="normal"
                             onChange={handleChange}
                             disabled={rightCode === RIGHTS_MAPPING.COURIER}
+                            sx={addStyleToTextField(formData.recipient)}
                         >
                         </TextField>
                         <TextField
@@ -88,6 +89,7 @@ const AddEditOrder = ({ userRights }) => {
                             fullWidth
                             margin="normal"
                             disabled={rightCode === RIGHTS_MAPPING.COURIER}
+                            sx={addStyleToTextField(formData.phone)}
                         />
                         <TextField
                             label='Adresa'
@@ -98,8 +100,11 @@ const AddEditOrder = ({ userRights }) => {
                             fullWidth
                             margin="normal"
                             disabled={rightCode === RIGHTS_MAPPING.COURIER}
+                            sx={addStyleToTextField(formData.address)}
+
+
                         />
-                        <FormControl fullWidth>
+                        <FormControl fullWidth sx={addStyleToTextField(formData.status)}>
                             <InputLabel id="status-label">Status</InputLabel>
                             <Select
                                 label="Status"

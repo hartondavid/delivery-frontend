@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiGetIssuesByAdminId, apiGetIssuesByCourierId } from "../../api/issues";
-import { showErrorToast } from "../../utils/utilFunctions";
+import { apiGetIssuesByAdminId, apiGetIssuesByCourierId, apiDeleteIssue } from "../../api/issues";
+import { showErrorToast, showSuccessToast } from "../../utils/utilFunctions";
 import { RIGHTS_MAPPING } from "../../utils/utilConstants";
 import GenericTable from "../../components/GenericTable";
+import dayjs from "dayjs";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const columns = [
     { field: 'id', headerName: 'Nr.', type: 'string' },
@@ -11,7 +14,11 @@ const columns = [
     { field: 'delivery_id', headerName: 'Nr. livrare', type: 'string' },
     { field: 'courier_name', headerName: 'Nume curier', type: 'string' },
     { field: 'courier_phone', headerName: 'Telefon', type: 'string' },
-    { field: 'created_at', headerName: 'Data', type: 'date' },
+    {
+        field: 'created_at', headerName: 'Data', type: 'date', renderCell: ({ value }) => {
+            return dayjs(value).format('DD.MM.YYYY');
+        }
+    },
 
 ];
 
@@ -21,14 +28,17 @@ const Issues = ({ userRights }) => {
 
     const rightCode = userRights[0]?.right_code;
 
-    console.log("rightCode", rightCode);
+
+    const [actions, setActions] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [issueToDelete, setIssueToDelete] = useState(null);
 
     useEffect(() => {
         if (rightCode === RIGHTS_MAPPING.ADMIN) {
             apiGetIssuesByAdminId(
                 (response) => {
                     if (response.data) {
-                        console.log('response', response);
+
                         setData(response.data);
                     }
                 },
@@ -38,12 +48,44 @@ const Issues = ({ userRights }) => {
             apiGetIssuesByCourierId(
                 (response) => {
                     setData(response.data);
-                    console.log("orders-----", response.data);
+
                 },
                 showErrorToast
             );
+            let actionsTmp = [];
+
+            actionsTmp = [
+                { icon: <DeleteIcon />, color: 'red', onClick: handleOpenDialog },
+
+            ];
+
+            setActions(actionsTmp);
         }
     }, [data.length, rightCode]);
+
+
+
+    // Function to open the delete confirmation dialog
+    const handleOpenDialog = (issueId) => {
+        setIssueToDelete(issueId); // Store the seminar ID to be deleted
+        setOpenDialog(true); // Open the dialog
+    };
+
+
+    const handleDeleteIssueRequest = () => {
+        apiDeleteIssue((response) => {
+            showSuccessToast(response.message);
+            const updatedData = data.filter((issue) => issue.id !== issueToDelete);
+            setData(updatedData);
+            setOpenDialog(false);
+
+        }, showErrorToast, issueToDelete);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
 
 
     return (
@@ -64,10 +106,26 @@ const Issues = ({ userRights }) => {
                         navigate(`/dashboard/addEditIssue/${id}`);
                     }
                 }}
+                actions={actions}
 
             >
 
             </GenericTable>
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle></DialogTitle>
+                <DialogContent>
+                    Esti sigur ca vrei sa stergi problema?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} sx={{ backgroundColor: '#009688', color: 'white' }}>
+                        Anuleaza
+                    </Button>
+                    <Button onClick={handleDeleteIssueRequest} sx={{ backgroundColor: 'red', color: 'white' }}>
+                        Sterge
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
         </>

@@ -41,8 +41,8 @@ export const showSuccessToast = (message) => {
 export const shouldShowMenu = (userRights, menu) => {
     let shouldShow = true;
 
-//    console.log('userRights', userRights);
-    if(userRights.length > 0){
+    //    console.log('userRights', userRights);
+    if (userRights.length > 0) {
         const right_code = userRights[0].right_code
 
         if (menu.rights && menu.rights.length !== 0 && !menu.rights.includes(right_code)) {
@@ -50,7 +50,7 @@ export const shouldShowMenu = (userRights, menu) => {
         }
     }
 
-      
+
     return shouldShow;
 }
 
@@ -68,4 +68,40 @@ export const formatCurrency = (amount) => {
         style: 'currency',
         currency: 'USD',
     }).format(amount);
+}
+
+
+export const addStyleToTextField = (hasValue) => {
+    return {
+        '& .MuiInputLabel-root': {
+
+            '&.Mui-focused': {
+                color: '#009688'
+            },
+            '&.MuiInputLabel-shrink': {
+                color: '#009688'
+            },
+
+        },
+        '& .MuiInputBase-input': {
+            color: 'black'
+        },
+        '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+                borderColor: ' #009688',
+            },
+            '&:hover fieldset': {
+                borderColor: '#009688'
+            }
+
+        },
+        ...(hasValue && {
+            '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#009688',
+            },
+            '& .MuiInputLabel-root': {
+                color: '#009688',
+            },
+        }),
+    }
 }

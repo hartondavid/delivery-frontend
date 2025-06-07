@@ -48,54 +48,6 @@ export const apiLogin = async (successCallback, errorCallback, credentials) => {
     }
 };
 
-// export const apiGetProfile = async (successCallback, errorCallback, userId) => {
-//     const apiUrl = process.env.REACT_APP_API_URL;
-//     const token = getToken();
-//     try {
-//         const response = await fetch(`${apiUrl}/api/users/profile/${userId}`, {
-//             method: 'GET',
-//             headers: {
-//                 'Authorization': `Bearer ${token}`
-//             },
-//         });
-
-//         const data = await response.json();
-//         if (!data.success) {
-//             errorCallback(data.message);
-//         } else {
-//             successCallback(data);
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//         errorCallback({ success: false, message: "Failed to fetch user profile" });
-//     }
-// };
-
-// export const apiUpdatePassword = async (successCallback, errorCallback, userId, newPassword) => {
-//     const apiUrl = process.env.REACT_APP_API_URL;
-//     const token = getToken();
-//     try {
-//         const response = await fetch(`${apiUrl}/api/users/updatePassword/${userId}`, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//             },
-//             body: JSON.stringify({ password: newPassword }),
-//         });
-
-//         const data = await response.json();
-//         if (!data.success) {
-//             errorCallback(data.message);
-//         } else {
-//             successCallback(data);
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//         errorCallback({ success: false, message: "Failed to update password" });
-//     }
-// };
-
 export const apiGetCouriers = async (successCallback, errorCallback) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
@@ -217,8 +169,3 @@ export const apiGetAllCouriersByAdminId = async (successCallback, errorCallback)
         errorCallback({ success: false, message: "Failed to fetch users for route" });
     }
 };
-
-
-
-
-

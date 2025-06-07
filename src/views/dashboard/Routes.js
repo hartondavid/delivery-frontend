@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { apiSearchCourier, apiDeleteCourier } from "../../api/user";
-import { apiGetCouriersByAdminId, apiGetCouriersByRouteId, apiGetRoutesByCourierId } from "../../api/routes";
+import { apiGetCouriersByAdminId, apiGetCouriersByRouteId, apiGetRoutesByCourierId, apiDeleteRoute } from "../../api/routes";
 import { apiAddCourierToRoute } from "../../api/user";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -17,15 +17,20 @@ import { RIGHTS_MAPPING } from "../../utils/utilConstants";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
-
-
+import dayjs from "dayjs";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { addStyleToTextField } from "../../utils/utilFunctions";
 const columns = [
     { field: 'id', headerName: 'Nr.', type: 'string' },
     { field: 'area', headerName: 'Zona', type: 'string' },
-    { field: 'created_at', headerName: 'Data', type: 'date' },
+    {
+        field: 'created_at', headerName: 'Data', type: 'date', renderCell: ({ value }) => {
+            return dayjs(value).format('DD.MM.YYYY');
+        }
+    },
 
 ];
-const Routes = ({ user, userRights }) => {
+const Routes = ({ userRights }) => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [actions, setActions] = useState([]);
@@ -40,9 +45,11 @@ const Routes = ({ user, userRights }) => {
     const [routeId, setRouteId] = useState(null);
 
     const [openAddCourierDialog, setOpenAddCourierDialog] = useState(false);
-    console.log("user", user);
-    const userId = user?.data?.id
+
     const rightCode = userRights[0]?.right_code;
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const [routeToDelete, setRouteToDelete] = useState(null);
 
     useEffect(() => {
         if (rightCode === RIGHTS_MAPPING.ADMIN) {
@@ -64,7 +71,7 @@ const Routes = ({ user, userRights }) => {
 
         actionsTmp = [
             { icon: (<GroupAddIcon />), color: 'black', onClick: (id) => handleFetchCouriers(id) },
-
+            { icon: <DeleteIcon />, color: 'red', onClick: handleOpenDialog },
 
         ];
 
@@ -79,7 +86,7 @@ const Routes = ({ user, userRights }) => {
 
         apiGetCouriersByRouteId((response) => {
             setSelectedCouriers(response.data);
-            console.log("selectedCouriers", selectedCouriers);
+
         }, showErrorToast, id);
 
         setOpenAddCourierDialog(true)
@@ -211,13 +218,35 @@ const Routes = ({ user, userRights }) => {
 
 
     const handleAssignCourierToRoute = () => {
-        console.log("selectedCouriers", selectedCouriers);
+
         setOpenAddCourierDialog(false);
         apiGetCouriersByAdminId((response) => {
             setData(response.data)
         }, showErrorToast);
 
     }
+
+
+    // Function to open the delete confirmation dialog
+    const handleOpenDialog = (routeId) => {
+        setRouteToDelete(routeId); // Store the seminar ID to be deleted
+        setOpenDialog(true); // Open the dialog
+    };
+
+
+    const handleDeleteOrderRequest = () => {
+        apiDeleteRoute((response) => {
+            showSuccessToast(response.message);
+            const updatedData = data.filter((route) => route.id !== routeToDelete);
+            setData(updatedData);
+            setOpenDialog(false);
+
+        }, showErrorToast, routeToDelete);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
 
     return (
@@ -248,7 +277,7 @@ const Routes = ({ user, userRights }) => {
                         fullWidth
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        sx={{ mt: 2 }}
+                        sx={{ ...addStyleToTextField(searchTerm), mt: 1 }}
                     />
 
                     {loading ? <CircularProgress /> : (
@@ -307,6 +336,21 @@ const Routes = ({ user, userRights }) => {
                         Finalizeaza
                     </Button>
 
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle></DialogTitle>
+                <DialogContent>
+                    Esti sigur ca vrei sa stergi ruta?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} sx={{ backgroundColor: '#009688', color: 'white' }}>
+                        Anuleaza
+                    </Button>
+                    <Button onClick={handleDeleteOrderRequest} sx={{ backgroundColor: 'red', color: 'white' }}>
+                        Sterge
+                    </Button>
                 </DialogActions>
             </Dialog>
 

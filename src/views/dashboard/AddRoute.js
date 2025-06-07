@@ -4,6 +4,7 @@ import { apiAddOrder, apiGetOrderById, apiUpdateOrder } from "../../api/orders";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/utilFunctions";
 import { apiAddRoute } from "../../api/routes";
+import { addStyleToTextField } from "../../utils/utilFunctions";
 
 const AddRoute = ({ user }) => {
     const navigate = useNavigate(); // Initialize navigate function
@@ -51,6 +52,7 @@ const AddRoute = ({ user }) => {
                             fullWidth
                             margin="normal"
                             onChange={handleChange}
+                            sx={addStyleToTextField(formData.area)}
                         >
                         </TextField>
 

@@ -48,11 +48,11 @@ export const apiUpdateRoute = async (routeId, updateData, successCallback, error
     }
 };
 
-export const apiDeleteRoute = async (routeId, successCallback, errorCallback) => {
+export const apiDeleteRoute = async (successCallback, errorCallback, routeId) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
-        const response = await fetch(`${apiUrl}/api/delivery/deleteRoute/${routeId}`, {
+        const response = await fetch(`${apiUrl}/api/routes/deleteRoute/${routeId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,28 +71,6 @@ export const apiDeleteRoute = async (routeId, successCallback, errorCallback) =>
     }
 };
 
-// export const apiGetRoutesByAdminId = async (successCallback, errorCallback) => {
-//     const apiUrl = process.env.REACT_APP_API_URL;
-//     const token = getToken();
-//     try {
-//         const response = await fetch(`${apiUrl}/api/routes/getRoutesByAdminId`, {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//             }
-//         });
-//         const data = await response.json();
-//         if (!data.success) {
-//             errorCallback(data.message);
-//         } else {
-//             successCallback(data);
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//         errorCallback({ success: false, message: "Failed to fetch routes" });
-//     }
-// };
 
 export const apiGetCouriersByAdminId = async (successCallback, errorCallback) => {
     const apiUrl = process.env.REACT_APP_API_URL;

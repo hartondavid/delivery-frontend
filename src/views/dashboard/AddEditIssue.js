@@ -3,15 +3,21 @@ import { useEffect, useState, useRef } from "react";
 import { apiAddIssue, apiGetIssueById, apiUpdateIssue } from "../../api/issues";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/utilFunctions";
-import { RIGHTS_MAPPING } from "../../utils/utilConstants";
 import { apiSearchDeliveryByCourierId } from "../../api/deliveries";
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
+import { addStyleToTextField } from "../../utils/utilFunctions";
 
 const AddEditIssue = ({ userRights }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { issueId } = useParams();
 
     const rightCode = userRights[0].right_code;
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [debounceTimeout, setDebounceTimeout] = useState(null);
+
 
     const [formData, setFormData] = useState({
         description: '',
@@ -24,19 +30,14 @@ const AddEditIssue = ({ userRights }) => {
             apiGetIssueById((response) => {
                 parseIssueResponse(response.data);
 
-                console.log('edit', response.data);
-
             }, showErrorToast, issueId)
 
-            console.log('parseProductResponse', formData);
-
         }
-
 
     }, [issueId])
 
     const parseIssueResponse = (data) => {
-        console.log('DATA FROM API', data);
+
         setFormData({
             description: data.description,
             delivery_id: data.delivery_id,
@@ -47,8 +48,6 @@ const AddEditIssue = ({ userRights }) => {
         if (foundDelivery) {
             setSelectedDelivery(foundDelivery);
         } else {
-            // Optionally, fetch the delivery from the server if not found
-            // Or setSelectedDelivery({ id: data.delivery_id }) as a fallback
             setSelectedDelivery({ id: data.delivery_id });
         }
 
@@ -61,11 +60,6 @@ const AddEditIssue = ({ userRights }) => {
             [name]: type === 'checkbox' ? checked : value
         });
     };
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [debounceTimeout, setDebounceTimeout] = useState(null);
 
 
     //Function to fetch employees based on search term
@@ -105,7 +99,6 @@ const AddEditIssue = ({ userRights }) => {
     const handleAddDelivery = (delivery) => {
 
         setSelectedDelivery(delivery);
-        console.log('delivery-----', delivery);
 
         setFormData({ ...formData, delivery_id: delivery.id });
 
@@ -115,7 +108,6 @@ const AddEditIssue = ({ userRights }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('formData-----', formData);
 
         if (issueId === '0') {
             apiAddIssue((response) => { navigate(-1); showSuccessToast(response.message) }, showErrorToast, formData.delivery_id, formData.description)
@@ -126,7 +118,7 @@ const AddEditIssue = ({ userRights }) => {
     return (
         <>
             <Box sx={{ m: 2 }}  >
-                <Typography variant="h4">
+                <Typography variant="h4" sx={{ mb: 2 }}>
                     <span className="font-bold text-black">{issueId === "0" ? "Adauga problema" : "Editeaza problema"}</span>
                 </Typography>
 
@@ -139,7 +131,7 @@ const AddEditIssue = ({ userRights }) => {
                             fullWidth
                             value={searchTerm}
                             onChange={handleSearchChange}
-                            sx={{ mt: 2 }}
+                            sx={{ ...addStyleToTextField(searchTerm), mb: -2 }}
                         />
 
                         {loading ? <CircularProgress /> : (
@@ -182,12 +174,10 @@ const AddEditIssue = ({ userRights }) => {
                                 type='string'
                                 value={formData.description || ''}
                                 fullWidth
-                                margin="normal"
                                 onChange={handleChange}
+                                sx={addStyleToTextField(formData.description)}
                             >
                             </TextField>
-
-
 
 
                             <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>

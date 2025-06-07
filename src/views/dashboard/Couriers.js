@@ -3,11 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../utils/utilFunctions";
 import GenericTable from "../../components/GenericTable";
 import { apiGetAllCouriersByAdminId } from "../../api/user";
+import dayjs from "dayjs";
 const columns = [
     { field: 'id', headerName: 'ID', type: 'string' },
     { field: 'name', headerName: 'Nume', type: 'string' },
     { field: 'email', headerName: 'Email', type: 'string' },
-    { field: 'created_at', headerName: 'Data', type: 'date' },
+    { field: 'phone', headerName: 'Telefon', type: 'string' },
+    {
+        field: 'created_at', headerName: 'Data', type: 'date', renderCell: ({ value }) => {
+            return dayjs(value).format('DD.MM.YYYY');
+        }
+    },
 
 ];
 

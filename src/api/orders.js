@@ -135,7 +135,7 @@ export const apiGetOrdersByCourierId = async (successCallback, errorCallback) =>
 
         const data = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            // errorCallback(data.message);
         } else {
             successCallback(data);
         }
@@ -197,4 +197,3 @@ export const apiGetOrdersByDeliveryId = async (successCallback, errorCallback, d
         errorCallback({ success: false, message: "Failed to fetch orders" });
     }
 };
-
