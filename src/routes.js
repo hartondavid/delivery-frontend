@@ -8,6 +8,7 @@ import Routes from "./views/dashboard/Routes.js";
 import Couriers from "./views/dashboard/Couriers.js";
 import AddEditIssue from "./views/dashboard/AddEditIssue.js";
 import Issues from "./views/dashboard/Issues.js";
+import AddCourier from "./views/dashboard/AddCourier.js";
 var routes = [
     {
         path: "/login",
@@ -80,6 +81,14 @@ var routes = [
         component: Issues,
         layout: "/dashboard",
     },
+    {
+        path: "/addCourier",
+        name: "Add Courier",
+        icon: "ni ni-cart-simple text-primary",
+        component: AddCourier,
+        layout: "/dashboard",
+    },
+
 
 ]
 

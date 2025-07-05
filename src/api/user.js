@@ -169,3 +169,28 @@ export const apiGetAllCouriersByAdminId = async (successCallback, errorCallback)
         errorCallback({ success: false, message: "Failed to fetch users for route" });
     }
 };
+
+export const apiAddCourier = async (successCallback, errorCallback, userData) => {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const token = getToken();
+    try {
+        const response = await fetch(`${apiUrl}/api/users/addUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+        if (!data.success) {
+            errorCallback(data.message);
+        } else {
+            successCallback(data);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        errorCallback({ success: false, message: "Failed to add user" });
+    }
+};
