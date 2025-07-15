@@ -1,6 +1,26 @@
 import { getToken } from "../utils/utilFunctions";
 
-export const apiRegister = async (successCallback, errorCallback, userData) => {
+interface ApiResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+    token?: string;
+}
+
+interface UserData {
+    [key: string]: any;
+}
+
+interface Credentials {
+    email: string;
+    password: string;
+}
+
+export const apiRegister = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void,
+    userData: UserData
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
         const response = await fetch(`${apiUrl}/api/users/register`, {
@@ -11,19 +31,23 @@ export const apiRegister = async (successCallback, errorCallback, userData) => {
             body: JSON.stringify(userData),
         });
 
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Registration failed" });
+        errorCallback("Registration failed");
     }
 };
 
-export const apiLogin = async (successCallback, errorCallback, credentials) => {
+export const apiLogin = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void,
+    credentials: Credentials
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     try {
         const response = await fetch(`${apiUrl}/api/users/login`, {
@@ -34,21 +58,24 @@ export const apiLogin = async (successCallback, errorCallback, credentials) => {
             body: JSON.stringify(credentials),
         });
 
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             // Get the token from the custom header
-            const token = response.headers.get('X-Auth-Token');
+            const token = response.headers.get('X-Auth-Token') || undefined;
             successCallback({ ...data, token });
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Login failed" });
+        errorCallback("Login failed");
     }
 };
 
-export const apiGetCouriers = async (successCallback, errorCallback) => {
+export const apiGetCouriers = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -59,19 +86,23 @@ export const apiGetCouriers = async (successCallback, errorCallback) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to fetch users" });
+        errorCallback("Failed to fetch users");
     }
 };
 
-export const apiSearchCourier = async (successCallback, errorCallback, searchField) => {
+export const apiSearchCourier = async (
+    successCallback: (data: any[]) => void,
+    errorCallback: (message: string) => void,
+    searchField: string
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -85,21 +116,24 @@ export const apiSearchCourier = async (successCallback, errorCallback, searchFie
         if (response.status === 204) {
             successCallback([])
         } else {
-            const data = await response.json();
+            const data: ApiResponse = await response.json();
             if (!data.success) {
-                errorCallback(data.message);
+                errorCallback(data.message || 'Unknown error');
             } else {
-                successCallback(data.data);
+                successCallback(data.data || []);
             }
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to fetch users" });
+        errorCallback("Failed to fetch users");
     }
 };
 
-
-export const apiDeleteCourier = async (successCallback, errorCallback, courierId) => {
+export const apiDeleteCourier = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void,
+    courierId: string | number
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -110,19 +144,24 @@ export const apiDeleteCourier = async (successCallback, errorCallback, courierId
                 'Authorization': `Bearer ${token}`
             }
         });
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to delete courier" });
+        errorCallback("Failed to delete courier");
     }
 };
 
-export const apiAddCourierToRoute = async (successCallback, errorCallback, routeId, courierId) => {
+export const apiAddCourierToRoute = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void,
+    routeId: string | number,
+    courierId: string | number
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -135,19 +174,22 @@ export const apiAddCourierToRoute = async (successCallback, errorCallback, route
             body: JSON.stringify({ courier_id: courierId })
         });
 
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to add order to delivery" });
+        errorCallback("Failed to add order to delivery");
     }
 };
 
-export const apiGetAllCouriersByAdminId = async (successCallback, errorCallback) => {
+export const apiGetAllCouriersByAdminId = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -158,19 +200,23 @@ export const apiGetAllCouriersByAdminId = async (successCallback, errorCallback)
                 'Authorization': `Bearer ${token}`
             }
         });
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to fetch users for route" });
+        errorCallback("Failed to fetch users for route");
     }
 };
 
-export const apiAddCourier = async (successCallback, errorCallback, userData) => {
+export const apiAddCourier = async (
+    successCallback: (data: ApiResponse) => void,
+    errorCallback: (message: string) => void,
+    userData: UserData
+): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
     try {
@@ -183,14 +229,14 @@ export const apiAddCourier = async (successCallback, errorCallback, userData) =>
             body: JSON.stringify(userData)
         });
 
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         if (!data.success) {
-            errorCallback(data.message);
+            errorCallback(data.message || 'Unknown error');
         } else {
             successCallback(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        errorCallback({ success: false, message: "Failed to add user" });
+        errorCallback("Failed to add user");
     }
-};
+}; 
