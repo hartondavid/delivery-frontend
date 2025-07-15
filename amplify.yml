@@ -6,7 +6,7 @@ frontend:
         - npm ci
     build:
       commands:
-        - echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env
+        - cp .env.example .env
         - npm run build
   artifacts:
     baseDirectory: build
