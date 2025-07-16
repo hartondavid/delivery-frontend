@@ -13,7 +13,7 @@ import { storeToken } from '../utils/utilFunctions';
 import { useNavigate } from 'react-router-dom';
 import { showSuccessToast } from '../utils/utilFunctions';
 import './login.css';
-import bgImage from "../../src/assets/login-bg.jpg";
+import bgImage from "../../src/assets/login-bg.png";
 import { addStyleToTextField } from '../utils/utilFunctions';
 
 const Login = () => {
