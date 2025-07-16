@@ -12,24 +12,32 @@ export const apiCheckLogin = async (
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const token = getToken();
+
+    console.log('API URL:', apiUrl);
+    console.log('Token exists:', !!token);
+
     try {
         const response = await fetch(`${apiUrl}/api/users/checkLogin`, {
-            method: 'GET', // or 'GET' depending on your APIS
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
 
+        console.log('Response status:', response.status);
         const data: User = await response.json();
+        console.log('Response data:', data);
 
         if (!data.success) {
-            // errorCallBack()
+            console.log('Login check failed');
+            errorCallBack();
         } else {
-            setUser(data)
+            console.log('Login check successful');
+            setUser(data);
         }
     } catch (error) {
         console.error('Error:', error);
-        // errorCallBack()
+        errorCallBack();
     }
 } 
