@@ -173,6 +173,9 @@ const Login = () => {
                         sx={{ ...addStyleToTextField(password), mt: 2, mb: 2 }}
                     />
 
+                    <Typography variant="body2" sx={{ textAlign: 'center', mt: 2 }}>email: david@gmail.com</Typography>
+                    <Typography variant="body2" sx={{ textAlign: 'center', mt: 2 }}>password: david</Typography>
+
                     <Button variant="contained" sx={{ backgroundColor: ' #009688', color: 'white' }}
                         fullWidth onClick={login}>
                         {'login'}
