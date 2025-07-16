@@ -62,36 +62,47 @@ const Login = () => {
             return
         }
 
-        console.log('login');
+        console.log('🔐 Login attempt for:', email);
+        console.log('📍 API URL:', process.env.REACT_APP_API_URL);
 
         const apiUrl = process.env.REACT_APP_API_URL;
         try {
             const response = await fetch(`${apiUrl}/api/users/login`, {
-                method: 'POST', // Change to 'POST' for sending data
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email: email,
                     password: password
-                }), // Convert your data to a JSON string
+                }),
             });
 
+            console.log('📡 Login response status:', response.status);
+            console.log('📋 Response headers:', Object.fromEntries(response.headers.entries()));
+
             const data: LoginResponse = await response.json();
+            console.log('📦 Login response data:', data);
 
             if (data.message === 'Successfully logged in!') {
                 const token = response.headers.get('X-Auth-Token');
-                if (token) {
-                    storeToken(token)
-                }
-                showSuccessToast('login-success')
-                navigate('/dashboard');
+                console.log('🔑 Token received:', token ? 'YES' : 'NO');
+                console.log('🔑 Token preview:', token ? token.substring(0, 50) + '...' : 'None');
 
+                if (token) {
+                    storeToken(token);
+                    console.log('💾 Token stored successfully');
+                } else {
+                    console.warn('⚠️ No token in response headers');
+                }
+                showSuccessToast('login-success');
+                navigate('/dashboard');
             } else {
-                showInvalidCredentials()
+                console.log('❌ Login failed:', data.message);
+                showInvalidCredentials();
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ Login error:', error);
 
             toast.error('something-went-wrong', {
                 position: "top-right",

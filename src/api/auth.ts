@@ -1,4 +1,4 @@
-import { getToken } from "../utils/utilFunctions";
+import { getToken, getApiHeaders } from "../utils/utilFunctions";
 
 interface User {
     success: boolean;
@@ -17,12 +17,12 @@ export const apiCheckLogin = async (
     console.log('Token exists:', !!token);
 
     try {
+        const headers = getApiHeaders(true);
+        console.log('📤 Auth headers:', headers);
+
         const response = await fetch(`${apiUrl}/api/users/checkLogin`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers
         });
 
         console.log('Response status:', response.status);

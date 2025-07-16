@@ -108,4 +108,26 @@ export const addStyleToTextField = (hasValue: string | boolean): Record<string, 
             },
         }),
     }
+}
+
+/**
+ * Generează headers-urile standard pentru toate cererile API
+ * Asigură consistența formatului token-ului în toată aplicația
+ */
+export const getApiHeaders = (includeAuth: boolean = true): Record<string, string> => {
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+    };
+
+    if (includeAuth) {
+        const token = getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+            console.log('🔑 Using token format: Bearer <token>');
+        } else {
+            console.warn('⚠️ No token available for authenticated request');
+        }
+    }
+
+    return headers;
 } 

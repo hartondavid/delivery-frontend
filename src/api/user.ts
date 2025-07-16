@@ -1,4 +1,4 @@
-import { getToken } from "../utils/utilFunctions";
+import { getToken, getApiHeaders } from "../utils/utilFunctions";
 
 interface ApiResponse {
     success: boolean;
