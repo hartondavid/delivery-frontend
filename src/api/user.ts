@@ -77,14 +77,10 @@ export const apiGetCouriers = async (
     errorCallback: (message: string) => void
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/getCouriers`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: getApiHeaders(true)
         });
         const data: ApiResponse = await response.json();
         if (!data.success) {
@@ -104,14 +100,10 @@ export const apiSearchCourier = async (
     searchField: string
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/searchCourier?searchField=${searchField}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: getApiHeaders(true)
         });
         if (response.status === 204) {
             successCallback([])
@@ -135,14 +127,10 @@ export const apiDeleteCourier = async (
     courierId: string | number
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/deleteCourier/${courierId}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: getApiHeaders(true)
         });
         const data: ApiResponse = await response.json();
         if (!data.success) {
@@ -163,14 +151,10 @@ export const apiAddCourierToRoute = async (
     courierId: string | number
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/addCourierToRoute/${routeId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: getApiHeaders(true),
             body: JSON.stringify({ courier_id: courierId })
         });
 
@@ -191,14 +175,10 @@ export const apiGetAllCouriersByAdminId = async (
     errorCallback: (message: string) => void
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/getAllCouriersByAdminId`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: getApiHeaders(true)
         });
         const data: ApiResponse = await response.json();
         if (!data.success) {
@@ -218,14 +198,10 @@ export const apiAddCourier = async (
     userData: UserData
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/users/addCourier`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: getApiHeaders(true),
             body: JSON.stringify(userData)
         });
 

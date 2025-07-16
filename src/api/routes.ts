@@ -1,4 +1,4 @@
-import { getToken } from '../utils/utilFunctions';
+import { getToken, getApiHeaders } from '../utils/utilFunctions';
 
 interface ApiResponse {
     success: boolean;
@@ -17,14 +17,10 @@ export const apiAddRoute = async (
     area: string
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/routes/addRoute`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: getApiHeaders(true),
             body: JSON.stringify({ area: area })
         });
         const data: ApiResponse = await response.json();
@@ -46,14 +42,10 @@ export const apiUpdateRoute = async (
     errorCallback: (message: string) => void
 ): Promise<void> => {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const token = getToken();
     try {
         const response = await fetch(`${apiUrl}/api/delivery/updateRoute/${routeId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: getApiHeaders(true),
             body: JSON.stringify(updateData)
         });
         const data: ApiResponse = await response.json();
